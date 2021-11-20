@@ -1,56 +1,46 @@
-# My third makefile
+.DEFAULT_GOAL := help
 
-# Name of the project
-PROJ_NAME=printy
+setup:
+	@poetry env use 3.9
 
-# .c files
-C_SOURCE=$(wildcard ./source/*.c)
+.PHONY: help
 
-# .h files
-H_SOURCE=$(wildcard ./source/*.h)
+help:
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-# Object files
-OBJ=$(subst .c,.o,$(subst source,objects,$(C_SOURCE)))
+test:
+	@pytest -vv tests/
 
-# Compiler and linker
-CC=gcc
-
-# Flags for compiler
-CC_FLAGS=-c         \
-         -W         \
-         -Wall      \
-         -ansi      \
-         -pedantic
-
-# Command used at clean target
-RM = rm -rf
-
-#
-# Compilation and linking
-#
-all: objFolder $(PROJ_NAME)
-
-$(PROJ_NAME): $(OBJ)
-	@ echo 'Building binary using GCC linker: $@'
-	$(CC) $^ -o $@
-	@ echo 'Finished building binary: $@'
-	@ echo ' '
-
-./objects/%.o: ./source/%.c ./source/%.h
-	@ echo 'Building target using GCC compiler: $<'
-	$(CC) $< $(CC_FLAGS) -o $@
-	@ echo ' '
-
-./objects/main.o: ./source/main.c $(H_SOURCE)
-	@ echo 'Building target using GCC compiler: $<'
-	$(CC) $< $(CC_FLAGS) -o $@
-	@ echo ' '
-
-objFolder:
-	@ mkdir -p objects
+cov:
+	@#pytest  tests/ -vv --cov=incolumepy_prospect_translate_python_gnu_gettext --cov-report='html'
 
 clean:
-	@ $(RM) ./objects/*.o $(PROJ_NAME) *~
-	@ rmdir objects
+	@echo -n "Cleanning environment .."
+	@find ./ -name '*.pyc' -exec rm -f {} \;
+	@find ./ -name '*~' -exec rm -f {} \;
+	@find ./ -name 'Thumbs.db' -exec rm -f {} \;
+	@find ./ -name '*.log' -exec rm -f {} \;
+	@find ./ -name ".cache" -exec rm -fr {} \;
+	@find ./ -name "*.egg-info" -exec rm -rf {} \;
+	@find ./ -name "*.coverage" -exec rm -rf {} \;
+	@rm -rf ".pytest_cache"
+	@rm -rf docs/_build
+	@echo " Ok."
 
-.PHONY: all clean
+clean-all: clean
+	@echo -n "Deep cleanning .."
+	@rm -rf dist
+	@rm -rf build
+	@rm -rf htmlcov
+	@rm -rf .tox
+	@#fuser -k 8000/tcp &> /dev/null
+	@echo " Ok."
+
+format: clean
+	@poetry run black incolumepy/ tests/
+
+prerelease:
+	v=`poetry version prerelease`; pytest -v tests/ && git ci -m "$v" pyproject.toml $(find -name "version.txt")  #sem tag
+
+release:
+	 s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
