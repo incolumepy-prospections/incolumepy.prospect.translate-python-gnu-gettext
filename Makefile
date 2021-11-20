@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 setup:
-	@poetry env use 3.9
+	@poetry env use 3.9; poetry install
 
 .PHONY: help
 
@@ -9,10 +9,10 @@ help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 test:
-	@pytest -vv tests/
+	@poetry run pytest -vv tests/
 
 cov:
-	@#pytest  tests/ -vv --cov=incolumepy_prospect_translate_python_gnu_gettext --cov-report='html'
+	@poetry run pytest  tests/ -vv --cov=incolumepy_prospect_translate_python_gnu_gettext --cov-report='html'
 
 clean:
 	@echo -n "Cleanning environment .."
