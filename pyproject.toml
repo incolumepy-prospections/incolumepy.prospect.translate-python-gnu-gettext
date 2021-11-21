@@ -5,7 +5,7 @@ description = ""
 authors = ["Britodfbr <britodfbr@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">3.8"
 toml = {extras = ["tomli"], version = "^0.10.2"}
 
 [tool.poetry.dev-dependencies]
