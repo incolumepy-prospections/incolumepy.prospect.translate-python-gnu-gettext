@@ -37,10 +37,10 @@ clean-all: clean
 	@echo " Ok."
 
 format: clean
-	@poetry run black incolumepy/ tests/
+	@poetry run black $(find -name "*incolume*") tests/
 
 prerelease:
-	v=`poetry version prerelease`; pytest -v tests/ && git ci -m "$v" pyproject.toml $(find -name "version.txt")  #sem tag
+	@v=$(poetry version prerelease); pytest -v tests/ && git ci -m "$v" pyproject.toml $(find -name "version.txt")  #sem tag
 
 release:
-	 s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
+	@s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
