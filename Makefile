@@ -3,7 +3,7 @@
 setup:
 	@poetry env use 3.9; poetry install
 
-.PHONY: help prerelease
+.PHONY: help prerelease release
 
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -43,4 +43,4 @@ prerelease:
 	@v=$$(poetry version prerelease); poetry run pytest -v tests/ && git ci -m "$$v" pyproject.toml $$(find -name version.txt)  #sem tag
 
 release:
-	@s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
+	@msg=$$(poetry version patch); poetry run pytest -v tests/ && git ci -m "$$msg" pyproject.toml $$(find -name "version.txt") && git tag -f $$(poetry version -s) -m "$$msg"  #com tag
