@@ -40,7 +40,10 @@ format: clean
 	@poetry run black $(find -name "*incolume*") tests/
 
 prerelease:
-	@v=$(poetry version prerelease); pytest -v tests/ && git ci -m "$v" pyproject.toml $(find -name "version.txt")  #sem tag
+	@ATUAL=$(poetry version -s)
+	@poetry version prerelease
+	@NEWST=$(poetry version -s)
+	poetry run pytest -v tests/ && git ci -m "Bumping version from $($ATUAL) to $($NEWST)" pyproject.toml `find -name "version.txt"`  #sem tag
 
 release:
 	@s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
