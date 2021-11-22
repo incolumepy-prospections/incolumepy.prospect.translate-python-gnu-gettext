@@ -3,7 +3,7 @@
 setup:
 	@poetry env use 3.9; poetry install
 
-.PHONY: help
+.PHONY: help prerelease
 
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -40,7 +40,7 @@ format: clean
 	@poetry run black $(find -name "*incolume*") tests/
 
 prerelease:
-	@v=$(poetry version prerelease); pytest -v tests/ && git ci -m "$v" pyproject.toml $(find -name "version.txt")  #sem tag
+	@v=$$(poetry version prerelease); poetry run pytest -v tests/ && git ci -m "$$v" pyproject.toml $$(find -name version.txt)  #sem tag
 
 release:
 	@s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
