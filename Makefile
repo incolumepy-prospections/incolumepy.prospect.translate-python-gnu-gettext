@@ -39,9 +39,8 @@ clean-all: clean
 format: clean
 	@poetry run black $(find -name "*incolume*") tests/
 
-prerelease: SHELL:=/bin/bash
 prerelease:
-	@MSG=$(poetry version prerelease); poetry run pytest -v tests/ && git ci -m $(MSG) pyproject.toml `find -name "version.txt"`  #sem tag
+	@v=$(poetry version prerelease); pytest -v tests/ && git ci -m "$v" pyproject.toml $(find -name "version.txt")  #sem tag
 
 release:
 	@s=`poetry version patch`; pytest -v tests/ && git ci -m "`echo $s`" pyproject.toml `find -name "version.txt"`; git tag -f `poetry version -s` -m "$(echo $s)"  #com tag
