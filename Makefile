@@ -45,4 +45,4 @@ prerelease:
 release:
 	@msg=$$(poetry version patch); poetry run pytest -v tests/ && git ci -m "$$msg" pyproject.toml $$(find -name "version.txt") && git tag -f $$(poetry version -s) -m "$$msg"  #com tag
 	@git checkout main
-	@git merge --no-ff --autostash -m "$$msg" dev && git tag -f $$(poetry version -s) -m "$$msg"
+	@git merge --no-ff --autostash -m "$$msg" -X theirs dev && git tag -f $$(poetry version -s) -m "$$msg"
