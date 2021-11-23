@@ -40,11 +40,12 @@ format: clean
 	@poetry run black $(find -name "*incolume*") tests/
 
 prerelease:
-	@v=$$(poetry version prerelease); poetry run pytest -v tests/ && git ci -m "$$v" pyproject.toml $$(find -name version.txt)  #sem tag
+	@v=$$(poetry version prerelease); poetry run pytest -v tests/ && git commit -m "$$v" pyproject.toml $$(find -name version.txt)  #sem tag
 
 release:
 	@msg=$$(poetry version patch); poetry run pytest -v tests/; \
-git ci -m "$$msg" pyproject.toml $$(find -name version.txt) \
+git commit -m "$$msg" pyproject.toml $$(find -name version.txt) \
 && git tag -f $$(poetry version -s) -m "$$msg"; \
-git co master; git merge --no-ff dev -m "$$msg" \
-&& git tag -f $$(poetry version -s) -m "$$msg"
+git checkout master; git merge --no-ff dev -m "$$msg" \
+&& git tag -f $$(poetry version -s) -m "$$msg" \
+&& git checkout dev
