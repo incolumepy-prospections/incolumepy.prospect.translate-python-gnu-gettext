@@ -43,6 +43,10 @@ prerelease:
 	@v=$$(poetry version prerelease); poetry run pytest -v tests/ && git ci -m "$$v" pyproject.toml $$(find -name version.txt)  #sem tag
 
 release:
-	@msg=$$(poetry version patch); poetry run pytest -v tests/ && git ci -m "$$msg" pyproject.toml $$(find -name "version.txt") && git tag -f $$(poetry version -s) -m "$$msg"  #com tag
-	@git checkout main
-	@git merge --no-ff --autostash -m "$$msg" -X theirs dev && git tag -f $$(poetry version -s) -m "$$msg"
+	@msg=$$(poetry version patch); \
+poetry run pytest -v tests/ \
+&& git ci -m "$$msg" pyproject.toml $$(find -name "version.txt") \
+&& git tag -f $$(poetry version -s) -m "$$msg"  #com tag
+	@git co master
+	@git merge --no-ff --autostash dev --log \
+&& git tag -f $$(poetry version -s) -m "$$msg"
