@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "incolumepy.prospect.translate-python-gnu-gettext"
-version = "0.1.4-alpha.0"
+version = "0.1.4"
 description = ""
 authors = ["Britodfbr <britodfbr@gmail.com>"]
 
