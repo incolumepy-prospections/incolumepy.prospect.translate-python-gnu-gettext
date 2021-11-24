@@ -17,9 +17,9 @@ msgstr ""
 
 #: main.py:13
 msgid "Hello world"
-msgstr "Olá mundo"
+msgstr "Χέρε Κόσμε"
 
 #: main.py:14
 msgid "This is a translatable string"
-msgstr "Esta é uma string traduzível"
+msgstr "Αυτό είναι ένα μεταφραζόμενο κείμενο"
 
